@@ -14,7 +14,6 @@ namespace UsuariosAPI.Controllers
     {
 
         private LoginService _loginService;
-        private TokenService _tokenService;
 
         public LoginController(LoginService loginService)
         {
