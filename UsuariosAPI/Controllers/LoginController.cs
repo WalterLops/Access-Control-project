@@ -14,6 +14,7 @@ namespace UsuariosAPI.Controllers
     {
 
         private LoginService _loginService;
+        private TokenService _tokenService;
 
         public LoginController(LoginService loginService)
         {
@@ -24,7 +25,7 @@ namespace UsuariosAPI.Controllers
         public IActionResult LogaUsuario([FromBody] LoginRequest loginRequest)
         {   
             Result result = _loginService.LogaUsuario(loginRequest);
-            return result.IsSuccess ? Ok("Logado com sucesso!") : Unauthorized("Usuário ou senha inválidos!");
+            return result.IsSuccess ? Ok(result.Reasons[0]) : Unauthorized(result.Reasons[0]);
         }
 
     }
