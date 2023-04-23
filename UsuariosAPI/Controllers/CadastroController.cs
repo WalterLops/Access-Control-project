@@ -20,7 +20,12 @@ namespace UsuariosAPI.Controllers
         public IActionResult CastroUsuario([FromBody] CreateUsuarioDto creatUsuarioDto)
         {
             Result result = _cadastroService.CadastraUsuario(creatUsuarioDto);
-            return result.IsSuccess ? Ok(creatUsuarioDto) : StatusCode(500);
+            var retorno = new
+            {
+                creatUsuarioDto,
+                codigoAtivacao = result.Reasons[0].Message
+            };
+            return result.IsSuccess ? Ok(retorno) : StatusCode(500);
         }
     }
 }

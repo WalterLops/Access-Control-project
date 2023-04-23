@@ -34,7 +34,8 @@ namespace UsuariosAPI
                 optionsAction.UseMySQL(Configuration.GetConnectionString("UserConnection")));
             services.AddIdentity<IdentityUser<int>, IdentityRole<int>>(
                     opt => opt.SignIn.RequireConfirmedEmail = true)
-                .AddEntityFrameworkStores<UserDbContext>();
+                .AddEntityFrameworkStores<UserDbContext>()
+                .AddDefaultTokenProviders();
             services.AddScoped<CadastroService, CadastroService>();
             services.AddScoped<LoginService, LoginService>();
             services.AddScoped<TokenService, TokenService>();
