@@ -29,9 +29,9 @@ namespace UsuariosAPI.Controllers
             return result.IsSuccess ? Ok(retorno) : StatusCode(500);
         }
         
-        [HttpPost]
+        [HttpGet]
         [Route("/ConfirmarEmail")]
-        public IActionResult ConfirmarEmail([FromBody] ConfirmarEmailRequest confirmarEmailRequest)
+        public IActionResult ConfirmarEmail([FromQuery] ConfirmarEmailRequest confirmarEmailRequest)
         {
             Result result = _cadastroService.ConfirmarEmail(confirmarEmailRequest);
             return result.IsSuccess ? Ok(result.Reasons[0].Message) : StatusCode(500);

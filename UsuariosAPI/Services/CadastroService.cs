@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Web;
 using AutoMapper;
 using FluentResults;
 using Microsoft.AspNetCore.Identity;
@@ -12,11 +13,13 @@ namespace UsuariosAPI.Services
     {
         IMapper _mapper;
         private UserManager<IdentityUser<int>> _userManager;
+        private EmailService _emailService;
 
-        public CadastroService(IMapper mapper, UserManager<IdentityUser<int>> userManager)
+        public CadastroService(IMapper mapper, UserManager<IdentityUser<int>> userManager, EmailService emailService)
         {
             _mapper = mapper;
             _userManager = userManager;
+            _emailService = emailService;
         }
 
         public Result CadastraUsuario(CreateUsuarioDto creatUsuarioDto)
@@ -26,8 +29,13 @@ namespace UsuariosAPI.Services
             var resultadoIdentity = _userManager.CreateAsync(usuarioIdentity, creatUsuarioDto.Password);
             if (resultadoIdentity.Result.Succeeded)
             {
-                var code =  _userManager.GenerateEmailConfirmationTokenAsync(usuarioIdentity);
-                return Result.Ok().WithSuccess(code.Result);
+                var code =  _userManager.GenerateEmailConfirmationTokenAsync(usuarioIdentity).Result;
+                var encodedCode = HttpUtility.UrlEncode(code);
+                
+                _emailService.EnviaEmailConfirmacao(new [] {usuarioIdentity.Email}, "Link de Ativação", 
+                    usuarioIdentity.Id, encodedCode);
+                
+                return Result.Ok().WithSuccess(code);
             }
             return Result.Fail("Erro ao cadastrar usuário");
         }
@@ -40,7 +48,7 @@ namespace UsuariosAPI.Services
                 .FirstOrDefault(u => u.Id == int.Parse(confirmarEmailRequest.UsuarioId));
             var identityResult = _userManager
                 .ConfirmEmailAsync(usuarioIdentity, confirmarEmailRequest.CodigoAtivacao).Result;
-            return identityResult.Succeeded ? Result.Ok().WithSuccess("Email confirmado com sucesso!") : Result.Fail("Erro ao confirmar email!");
+            return identityResult.Succeeded ? Result.Ok().WithSuccess("Email confirmado com sucesso!") : Result.Fail($"Erro ao confirmar email:{identityResult.Errors}");
         }
     }
 }
