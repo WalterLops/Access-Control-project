@@ -30,7 +30,7 @@ namespace UsuariosAPI.Services
                 Token token = _tokenService.CreateToken(identityUser);
                 return Result.Ok().WithSuccess(token.Value);
             }
-            return Result.Fail("Usuário ou senha inválidos");
+            return Result.Fail("Falha ao logar");
         }
     }
 }

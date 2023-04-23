@@ -6,11 +6,11 @@ namespace UsuariosAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class LogoutContoller : ControllerBase
+    public class LogoutController : ControllerBase
     {
         LogoutService _logoutService;
         
-        public LogoutContoller(LogoutService logoutService)
+        public LogoutController(LogoutService logoutService)
         {
             _logoutService = logoutService;
         }
