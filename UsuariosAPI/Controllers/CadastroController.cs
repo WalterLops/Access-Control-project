@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 using UsuariosAPI.Data.Dtos;
+using UsuariosAPI.Data.Requests;
 using UsuariosAPI.Services;
 
 namespace UsuariosAPI.Controllers
@@ -26,6 +27,14 @@ namespace UsuariosAPI.Controllers
                 codigoAtivacao = result.Reasons[0].Message
             };
             return result.IsSuccess ? Ok(retorno) : StatusCode(500);
+        }
+        
+        [HttpPost]
+        [Route("/ConfirmarEmail")]
+        public IActionResult ConfirmarEmail([FromBody] ConfirmarEmailRequest confirmarEmailRequest)
+        {
+            Result result = _cadastroService.ConfirmarEmail(confirmarEmailRequest);
+            return result.IsSuccess ? Ok(result.Reasons[0].Message) : StatusCode(500);
         }
     }
 }

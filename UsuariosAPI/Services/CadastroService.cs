@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using FluentResults;
 using Microsoft.AspNetCore.Identity;
 using UsuariosAPI.Data.Dtos;
+using UsuariosAPI.Data.Requests;
 using UsuariosAPI.Models;
 
 namespace UsuariosAPI.Services
@@ -28,6 +30,17 @@ namespace UsuariosAPI.Services
                 return Result.Ok().WithSuccess(code.Result);
             }
             return Result.Fail("Erro ao cadastrar usuário");
+        }
+
+        public Result ConfirmarEmail(ConfirmarEmailRequest confirmarEmailRequest)
+        {
+            //var usuarioIdentity = _userManager.FindByIdAsync(confirmarEmailRequest.UsuarioId);
+            var usuarioIdentity = _userManager
+                .Users
+                .FirstOrDefault(u => u.Id == int.Parse(confirmarEmailRequest.UsuarioId));
+            var identityResult = _userManager
+                .ConfirmEmailAsync(usuarioIdentity, confirmarEmailRequest.CodigoAtivacao).Result;
+            return identityResult.Succeeded ? Result.Ok().WithSuccess("Email confirmado com sucesso!") : Result.Fail("Erro ao confirmar email!");
         }
     }
 }
